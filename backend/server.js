@@ -33,8 +33,9 @@ const io = new Server(server, {
   },
 });
 
+
 // Import socket file
-require("./socket/socket").default(io);
+require("./socket/socket")(io);
 
 // start server
 server.listen(3000, () => {
