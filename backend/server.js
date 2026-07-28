@@ -3,6 +3,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const http = require("http");
+const { Server } = require("socket.io");
+
 
 app.use(
   cors({
@@ -19,6 +22,11 @@ app.get("/api/test", (req, res) => {
     message: "server is connected",
   });
 });
+
+// creating http server
+
+
+
 
 const RunServer = async () => {
   try {
