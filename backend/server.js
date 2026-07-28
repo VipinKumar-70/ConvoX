@@ -6,7 +6,6 @@ const app = express();
 const http = require("http");
 const { Server } = require("socket.io");
 
-
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -24,18 +23,20 @@ app.get("/api/test", (req, res) => {
 });
 
 // creating http server
+const server = http.createServer(app);
 
+// creating socket.io server
+const io = new Server(server, {
+  cors: {
+    origin: process.env.CLIENT_URL,
+    credentials: true,
+  },
+});
 
+// Import socket file
+require("./socket/socket").default(io);
 
-
-const RunServer = async () => {
-  try {
-    app.listen(3000, () => {
-      console.log("server is running...");
-    });
-  } catch (error) {
-    console.error("Server failed to start", error);
-  }
-};
-
-RunServer();
+// start server
+server.listen(3000, () => {
+  console.log("Server is running on port 3000");
+});
