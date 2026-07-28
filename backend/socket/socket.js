@@ -1,4 +1,6 @@
 const socketConnection = (io) => {
+  console.log("Socket.IO setup loaded");
+
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
@@ -14,4 +16,4 @@ const socketConnection = (io) => {
   });
 };
 
-export default socketConnection;
+module.exports = socketConnection;
