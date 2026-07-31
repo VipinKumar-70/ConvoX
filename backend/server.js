@@ -33,11 +33,21 @@ const io = new Server(server, {
   },
 });
 
-
 // Import socket file
 require("./socket/socket")(io);
 
+
 // start server
-server.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+const startServer = async () => {
+  try {
+    server.listen(3000, () => {
+      console.log("Server is running on port 3000");
+    });
+  } catch (error) {
+    console.log("Server failed to start:", error);
+    process.exit(1);
+  }
+};
+
+// run server
+startServer();
