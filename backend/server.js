@@ -3,6 +3,10 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const cookieParser = require("cookie-parser");
+const userAuth = require("./routes/userRoutes");
+const connectDB = require("./config/database");
+
 const http = require("http");
 const { Server } = require("socket.io");
 
@@ -15,6 +19,7 @@ app.use(
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.get("/api/test", (req, res) => {
   res.json({
@@ -36,10 +41,13 @@ const io = new Server(server, {
 // Import socket file
 require("./socket/socket")(io);
 
+app.use("/api/auth", userAuth);
 
 // start server
 const startServer = async () => {
   try {
+    await connectDB();
+
     server.listen(3000, () => {
       console.log("Server is running on port 3000");
     });
