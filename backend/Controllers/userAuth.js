@@ -1,11 +1,11 @@
 const userModel = require("../Models/user");
 const jwt = require("jsonwebtoken");
-const brcypt = require("bcrypt");
+const bcrypt = require("bcrypt");
 
 const register = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const saltRound = 10;
+    const saltRounds = 10;
     const myPlainTextPassword = password;
 
     const exitsingUser = await userModel.findOne({ email });
@@ -16,7 +16,7 @@ const register = async (req, res) => {
     }
 
     bcrypt.genSalt(saltRounds, async function (err, salt) {
-      bcrypt.hash(myPlaintextPassword, salt, async function (err, hash) {
+      bcrypt.hash(myPlainTextPassword, salt, async function (err, hash) {
         const createUser = await userModel.create({
           username,
           email,
