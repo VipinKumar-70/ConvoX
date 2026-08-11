@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { registerUser } from "../api/authAPI";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setformData] = useState({
@@ -7,6 +9,7 @@ const Register = () => {
     email: "",
     password: "",
   });
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setformData({
@@ -15,10 +18,22 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
-    console.log(formData);
+    try {
+      const response = await registerUser(formData);
+      setformData({
+        username: "",
+        email: "",
+        password: "",
+      });
+      if (response.success) {
+        navigate("/api/auth/login");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

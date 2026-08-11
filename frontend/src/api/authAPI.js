@@ -1,21 +1,21 @@
 import api from "./api";
 
-export const login = async (credentials) => {
-  return api("/login", {
-    meethod: "POST",
+export const loginUser = async (credentials) => {
+  return api("/auth/login", {
+    method: "POST",
     body: JSON.stringify(credentials),
   });
 };
 
-export const register = async (userData) => {
-  return api("/register", {
-    meethod: "POST",
+export const registerUser = async (userData) => {
+  return api("/auth/register", {
+    method: "POST",
     body: JSON.stringify(userData),
   });
 };
 
-export const logout = async () => {
-  return api("/logout", {
-    meethod: "POST",
+export const logoutUser = async () => {
+  return api("/auth/logout", {
+    method: "POST",
   });
 };

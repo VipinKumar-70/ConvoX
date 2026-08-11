@@ -1,11 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { loginUser } from "../api/authAPI";
 
 const Login = () => {
   const [formData, setformData] = useState({
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (event) => {
     setformData({
@@ -14,8 +17,23 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    try {
+      const response = await loginUser(formData);
+      setformData({
+        email: "",
+        password: "",
+      });
+      console.log("logged in :", response);
+
+      if (response.success) {
+        navigate("/chatwindow");
+      }
+    } catch (error) {
+      console.log(error);
+    }
 
     console.log(formData);
   };
