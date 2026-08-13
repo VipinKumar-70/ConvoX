@@ -19,3 +19,9 @@ export const logoutUser = async () => {
     method: "POST",
   });
 };
+
+export const getCurrentUser = async () => {
+  return api("/auth/me", {
+    method: "GET",
+  });
+};
