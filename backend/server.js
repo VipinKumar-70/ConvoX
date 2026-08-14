@@ -4,7 +4,8 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const cookieParser = require("cookie-parser");
-const userAuth = require("./routes/userRoutes");
+const userAuth = require("./routes/authRoutes");
+const userRoutes = require("./routes/userRoutes");
 const connectDB = require("./config/database");
 
 const http = require("http");
@@ -42,6 +43,7 @@ const io = new Server(server, {
 require("./socket/socket")(io);
 
 app.use("/api/auth", userAuth);
+app.use("/api/user", userRoutes);
 
 // start server
 const startServer = async () => {
