@@ -6,18 +6,13 @@ node_modules/
 .env.*
 !.env.example
 
-# Build
-dist/
-dist-ssr/
-
 # Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
-# Editor
-.vscode/
-.idea/
+# Build
+dist/
+build/
+
+# OS
 .DS_Store
+Thumbs.db
