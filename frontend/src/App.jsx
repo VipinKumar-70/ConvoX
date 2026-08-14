@@ -3,16 +3,27 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Chat from "./pages/ChatWindow/Chat";
+import { AuthProvider } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
     <section>
-      <Routes>
-        <Route path="/" element={<Home />}></Route>
-        <Route path="/api/auth/register" element={<Register />}></Route>
-        <Route path="/api/auth/login" element={<Login />}></Route>
-        <Route path="/chatWindow" element={<Chat />}></Route>
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/api/auth/register" element={<Register />}></Route>
+          <Route path="/api/auth/login" element={<Login />}></Route>
+          <Route
+            path="/chatWindow"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          ></Route>
+        </Routes>
+      </AuthProvider>
     </section>
   );
 }

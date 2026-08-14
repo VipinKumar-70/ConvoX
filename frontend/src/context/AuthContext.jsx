@@ -22,8 +22,6 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
-  if (isLoading) return <div>Loding...</div>;
-
   return (
     <AuthContext.Provider
       value={{ user, setUser, isLoading, setIsLoading, fetchUser }}
