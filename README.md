@@ -1,49 +1,55 @@
-# ConvoX - Real-Time Chat Application
+<div align="center">
 
-A modern **Real-Time Chat Application** built using the **MERN Stack** (MongoDB, Express.js, React.js, Node.js). ConvoX allows users to **register, login, and chat**, with secure cookie-based authentication and a Socket.IO layer for real-time messaging.
+# 💬 ConvoX
+
+### Real-Time Chat Application built with the MERN Stack
+
+A full-stack chat application with secure JWT authentication and a Socket.IO real-time messaging layer.
+
+[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white)](https://react.dev/)
+[![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
+[![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)](https://www.mongodb.com/)
+[![Socket.IO](https://img.shields.io/badge/Socket.IO-real--time-010101?logo=socket.io&logoColor=white)](https://socket.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Status](https://img.shields.io/badge/status-in--development-orange)](#-project-status)
+
+[Features](#-features) • [Tech Stack](#-tech-stack) • [Architecture](#️-architecture) • [Getting Started](#-getting-started) • [Roadmap](#-project-status)
+
+</div>
 
 ---
+
+## 📖 Overview
+
+ConvoX is a full-stack real-time chat application built to explore secure authentication and live communication patterns in the MERN stack. It currently ships a complete, production-style authentication flow — JWT sessions in httpOnly cookies, bcrypt password hashing, and protected API routes — with a Socket.IO layer connected end-to-end and the chat interface actively being wired up for live messaging.
 
 ## 🌟 Features
 
-- **User Authentication & Registration**
-  - Register & login with email and password
-  - Password hashing using bcrypt
-  - JWT stored in a secure httpOnly cookie
-  - Duplicate email checks
-  - Auth middleware to protect API routes
-- **Session Handling**
-  - Session restored automatically on page refresh via AuthContext
-- **Chat Interface**
-  - Sidebar with user profile and conversation list
-  - Chat window with message bubbles and input bar
-  - Responsive layout for all screen sizes
-- **Real-Time Communication**
-  - Socket.IO server connected to the Express backend
-  - Socket.IO client connected from the React frontend
-- **Backend**
-  - RESTful API using **Node.js & Express**
-  - Data storage with **MongoDB & Mongoose**
-- **Security**
-  - Password hashing using **bcrypt**
-  - JWT authentication
-  - Protected routes via middleware
-  - CORS configured for the frontend origin
-
----
+| Category | Details |
+|---|---|
+| 🔐 **Authentication** | Register & login with email/password, bcrypt password hashing, JWT stored in a secure httpOnly cookie |
+| 🛡️ **Route Protection** | Custom Express middleware verifies JWTs before granting access to protected endpoints |
+| 🔄 **Session Handling** | Session automatically restored on page refresh via React Context |
+| 💬 **Chat Interface** | Sidebar with user profile and conversation list, chat window with message bubbles and input bar |
+| ⚡ **Real-Time Layer** | Socket.IO server and client connected between backend and frontend |
+| 📡 **REST API** | Clean route → middleware → controller → model architecture |
+| 📱 **Responsive UI** | Built with Tailwind CSS for a consistent experience across screen sizes |
 
 ## 💻 Tech Stack
 
-| Layer          | Technology                               |
-| -------------- | ----------------------------------------- |
-| Frontend       | React.js, Tailwind CSS, React Router DOM  |
-| Backend        | Node.js, Express.js                       |
-| Database       | MongoDB, Mongoose                         |
-| Authentication | JWT, bcrypt                               |
-| Real-Time      | Socket.IO                                 |
-| API Requests   | Fetch API                                 |
+<div align="center">
 
----
+| Layer | Technology |
+|---|---|
+| **Frontend** | React 19, Vite, React Router DOM, Context API, Tailwind CSS |
+| **Backend** | Node.js, Express.js |
+| **Database** | MongoDB, Mongoose |
+| **Authentication** | JWT, bcrypt |
+| **Real-Time** | Socket.IO |
+| **Tooling** | ESLint, dotenv |
+
+</div>
 
 ## 🏗️ Architecture
 
@@ -77,7 +83,32 @@ A modern **Real-Time Chat Application** built using the **MERN Stack** (MongoDB,
                     └──────────────────┘
 ```
 
----
+<details>
+<summary><strong>🔐 Authentication flow</strong></summary>
+
+```
+Register / Login form
+        │
+        ▼
+POST /api/auth/register | /api/auth/login
+        │
+        ▼
+bcrypt hash / compare
+        │
+        ▼
+Sign JWT → set httpOnly cookie
+        │
+        ▼
+Client redirects to /chatWindow
+        │
+        ▼
+verifyToken middleware on protected routes
+        │
+        ▼
+GET /api/user/me → AuthContext hydrates session
+```
+
+</details>
 
 ## 📂 Project Structure
 
@@ -128,88 +159,127 @@ Chat Application/
 └── README.md
 ```
 
----
+## 🚀 Getting Started
 
-## 🚀 Installation & Setup
+### Prerequisites
 
-1. **Clone the repository:**
+- Node.js (v18+)
+- MongoDB (local instance or connection string)
+- Git
+
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/VipinKumar-70/ConvoX.git
-cd "ConvoX"
+cd ConvoX
 ```
 
-2. **Backend Setup:**
+### 2. Backend setup
 
 ```bash
 cd backend
 npm install
-# Create a .env file with:
-# CLIENT_URL=http://localhost:5173
-# SECRET_KEY=<your_jwt_secret>
+```
+
+Create a `.env` file inside `backend/`:
+
+```env
+CLIENT_URL=http://localhost:5173
+SECRET_KEY=your_jwt_secret
+```
+
+```bash
 npm start
 ```
 
-3. **Frontend Setup:**
+The API runs on `http://localhost:3000`.
+
+### 3. Frontend setup
+
+In a separate terminal:
 
 ```bash
 cd frontend
 npm install
-# Create a .env file with:
-# VITE_BASE_URL=http://localhost:3000/api
+```
+
+Create a `.env` file inside `frontend/`:
+
+```env
+VITE_BASE_URL=http://localhost:3000/api
+```
+
+```bash
 npm run dev
 ```
 
-4. Open your browser at `http://localhost:5173`
+The app runs on `http://localhost:5173`.
 
----
+## 🛠️ Usage
 
-## 🛠 Usage
+1. Register a new account — email must be unique
+2. Login with your credentials
+3. Session is restored automatically on refresh
+4. Access the chat screen at `/chatWindow`
 
-- Register a new account → email must be unique
-- Login using your registered credentials
-- Session is restored automatically on refresh
-- Access the chat screen from `/chatWindow`
+## 🔒 Security
 
----
-
-## 🔒 Security & Validation
-
-- Passwords stored hashed in MongoDB using bcrypt
-- JWT signed on login and stored in a httpOnly cookie
-- Duplicate emails are blocked during registration
-- Protected API routes verified through auth middleware
-- CORS restricted to the configured client origin
-
----
+- Passwords hashed with **bcrypt** before storage
+- **JWT** issued on login and stored as an httpOnly cookie (inaccessible to client-side JS)
+- Protected API routes enforced via `verifyToken` middleware
+- **CORS** scoped to the configured client origin with credentials enabled
+- Sensitive configuration kept in environment variables
 
 ## 🚧 Project Status
 
-ConvoX is currently under development.
+ConvoX is under active development.
 
-- ✅ Authentication (register, login, logout, session restore)
-- ✅ Protected API routes
-- ✅ Chat UI layout
-- ✅ Socket.IO server & client scaffolding
-- 🔄 Connecting Socket.IO events to the chat UI
-- 🔄 Message storage in MongoDB
-- 🔄 Real user list & conversation selection
+**Completed**
+- [x] User registration & login (JWT + bcrypt)
+- [x] Session restore on refresh
+- [x] Protected API routes
+- [x] REST API architecture (routes → middleware → controllers → models)
+- [x] Socket.IO server & client scaffolding
+- [x] Chat UI layout
 
----
+**In Progress**
+- [ ] Wire Socket.IO events into the chat UI for live messaging
+- [ ] Message schema & persistence in MongoDB
+- [ ] Real user list & conversation selection
+- [ ] Scope messages to individual conversations/rooms
 
-## Contributing
+## 🔮 Roadmap
 
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository and submit a pull request with your changes. Make sure to follow the standard coding conventions and best practices.
+- Online/offline presence & typing indicators
+- Read receipts and delivery status
+- Image and file sharing
+- Message search, editing, and deletion
+- Group conversations
+- Production deployment
 
----
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/your-feature`)
+3. Commit your changes
+4. Push the branch
+5. Open a Pull Request
 
 ## 📜 License
 
-This project is licensed under the MIT License. See the LICENSE file for details. [MIT License](LICENSE)
-
----
+This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.
 
 ## 📩 Contact
 
-If you have any questions or need further assistance, please don't hesitate to contact me at  
-[Vipin Kumar](mailto:vipin70kr@gmail.com). I'll be happy to help!
+<div align="center">
+
+**Vipin Kumar** — MERN Stack Developer
+
+[![GitHub](https://img.shields.io/badge/GitHub-VipinKumar--70-181717?logo=github)](https://github.com/VipinKumar-70)
+[![Email](https://img.shields.io/badge/Email-vipin70kr%40gmail.com-D14836?logo=gmail&logoColor=white)](mailto:vipin70kr@gmail.com)
+
+⭐ If you found this project useful, consider giving it a star!
+
+</div>
