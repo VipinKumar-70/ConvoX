@@ -21,7 +21,7 @@ export const logoutUser = async () => {
 };
 
 export const getCurrentUser = async () => {
-  return api("/auth/me", {
+  return api("/user/me", {
     method: "GET",
   });
 };
