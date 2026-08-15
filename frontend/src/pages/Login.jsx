@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { loginUser } from "../api";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [formData, setformData] = useState({
@@ -9,6 +10,7 @@ const Login = () => {
   });
 
   const navigate = useNavigate();
+  const { fetchUser } = useAuth();
 
   const handleChange = (event) => {
     setformData({
@@ -22,15 +24,19 @@ const Login = () => {
 
     try {
       const response = await loginUser(formData);
-      setformData({
-        email: "",
-        password: "",
-      });
-      console.log("logged in :", response);
 
       if (response.success) {
-        navigate("/chatwindow");
+        await fetchUser();
+
+        setformData({
+          email: "",
+          password: "",
+        });
+
+        navigate("/chatwindow", { replace: true });
       }
+
+      console.log("logged in :", response);
     } catch (error) {
       console.log(error);
     }
@@ -111,7 +117,7 @@ const Login = () => {
           <p className="text-center text-sm text-zinc-400 mt-6">
             Don't have an account?
             <Link
-              to="/api/auth/register"
+              to="/register"
               className="text-cyan-400 hover:text-cyan-300 ml-1"
             >
               Create account

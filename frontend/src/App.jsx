@@ -12,8 +12,8 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/api/auth/register" element={<Register />}></Route>
-          <Route path="/api/auth/login" element={<Login />}></Route>
+          <Route path="/register" element={<Register />}></Route>
+          <Route path="/login" element={<Login />}></Route>
           <Route
             path="/chatWindow"
             element={

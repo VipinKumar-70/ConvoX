@@ -31,14 +31,14 @@ const Home = () => {
         {/* Auth */}
         <div className="flex items-center gap-3">
           <Link
-            to="/api/auth/login"
+            to="/login"
             className="px-4 py-2 text-sm text-zinc-300 hover:text-white transition"
           >
             Login
           </Link>
 
           <Link
-            to="/api/auth/register"
+            to="/register"
             className="bg-cyan-400 hover:bg-cyan-300 text-zinc-950 px-5 py-2.5 rounded-lg text-sm font-semibold transition"
           >
             Get Started
@@ -71,14 +71,14 @@ const Home = () => {
 
             <div className="flex flex-wrap gap-4 mt-9">
               <Link
-                to="/api/auth/register"
+                to="/register"
                 className="bg-cyan-400 hover:bg-cyan-300 text-zinc-950 font-semibold px-7 py-3.5 rounded-lg transition"
               >
                 Start Chatting →
               </Link>
 
               <Link
-                to="/api/auth/login"
+                to="/login"
                 className="border border-zinc-700 hover:border-zinc-500 px-7 py-3.5 rounded-lg transition"
               >
                 Login
@@ -221,7 +221,7 @@ const Home = () => {
           </p>
 
           <Link
-            to="/api/auth/register"
+            to="/register"
             className="inline-block mt-8 bg-cyan-400 hover:bg-cyan-300 text-zinc-950 font-semibold px-8 py-3.5 rounded-lg transition"
           >
             Create Account →

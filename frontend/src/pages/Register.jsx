@@ -132,7 +132,7 @@ const Register = () => {
           <p className="text-center text-sm text-zinc-400 mt-6">
             Already have an account?
             <Link
-              to="/api/auth/login"
+              to="/login"
               className="text-cyan-400 hover:text-cyan-300 ml-1"
             >
               Login
