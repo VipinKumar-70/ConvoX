@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Chat from "./pages/ChatWindow/Chat";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
+import PublicRoute from "./components/PublicRoute";
 
 function App() {
   return (
@@ -12,8 +13,25 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<Home />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/login" element={<Login />}></Route>
+          {/* Public Route */}
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>
+            }
+          ></Route>
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>
+            }
+          ></Route>
+
+          {/* Private Route */}
           <Route
             path="/chatWindow"
             element={
