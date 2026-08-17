@@ -1,19 +1,6 @@
 import { useEffect } from "react";
-import socket from "../socket/socket";
 
 const ChatWindow = () => {
-  useEffect(() => {
-    socket.connect();
-
-    socket.on("connect", () => {
-      console.log("socket connected:", socket.id);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
   return (
     <section className="flex min-w-0 flex-1 flex-col bg-zinc-950 text-white">
       {/* Header */}
