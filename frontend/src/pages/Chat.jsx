@@ -8,18 +8,18 @@ const Chat = () => {
   const { user } = useAuth();
 
   useEffect(() => {
+    if (!user) {
+      return () => {
+        socket.disconnect();
+      };
+    }
+
     if (user) {
       socket.connect();
 
       socket.on("connect", () => {
         console.log("socket connected:", socket.id);
       });
-    }
-
-    if (!user) {
-      return () => {
-        socket.disconnect();
-      };
     }
   }, []);
 
