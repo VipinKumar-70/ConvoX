@@ -21,7 +21,7 @@ const Chat = () => {
         console.log("socket connected:", socket.id);
       });
     }
-  }, []);
+  }, [user]);
 
   return (
     <main className="flex h-screen w-full bg-zinc-950 text-white">

@@ -1,42 +1,30 @@
 const jwt = require("jsonwebtoken");
+const cookie = require("cookie");
 
 const socketAuth = (socket, next) => {
   try {
     const cookieHeader = socket.handshake.headers.cookie;
 
-    console.log("Cookie:", cookieHeader);
-
     if (!cookieHeader) {
       return next(new Error("Authentication required"));
     }
 
-    const cookies = {};
-
-    cookieHeader.split(";").forEach((cookie) => {
-      const [key, value] = cookie.trim().split("=");
-
-      cookies[key] = value;
-    });
-
+    const cookies = cookie.parse(cookieHeader);
     const token = cookies.userToken;
 
-    console.log("Token:", token);
-
     if (!token) {
-      return next(new Error("Token not found"));
+      return next(new Error("JWT token not found"));
     }
 
     const decoded = jwt.verify(token, process.env.SECRET_KEY);
 
-    console.log("Decoded user:", decoded);
-
+    // Store authenticated user information on the socket
     socket.user = decoded;
 
     next();
   } catch (error) {
-    console.log("Socket authentication error:", error.message);
-
-    next(new Error("Invalid token"));
+    console.error("Socket authentication failed:", error.message);
+    next(new Error("Invalid or expired token"));
   }
 };
 
