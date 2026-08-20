@@ -15,4 +15,16 @@ const getUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { getUserProfile };
+const getAllUser = async (req, res) => {
+  try {
+    const userData = await userModel
+      .find()
+      .select("-password")
+      .sort({ createdAt: 1 });
+    return res.status(200).json({ success: true, userData });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "failed to fetch Users." });
+  }
+};
+
+module.exports = { getUserProfile, getAllUser };
