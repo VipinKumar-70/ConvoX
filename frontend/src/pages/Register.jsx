@@ -29,7 +29,7 @@ const Register = () => {
         password: "",
       });
       if (response.success) {
-        navigate("/api/auth/login");
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);

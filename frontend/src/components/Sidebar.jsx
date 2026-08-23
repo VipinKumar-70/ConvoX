@@ -1,18 +1,25 @@
 import { useState } from "react";
-import { getAllUser, getCurrentUser } from "../api";
+import { useNavigate } from "react-router-dom";
+import { getAllUser, logoutUser } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 
 const Sidebar = () => {
-  const [users, setUsers] = useState([]);
+  const { user, setUser } = useAuth();
+  const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
   const displayUser = async () => {
     try {
       const response = await getAllUser();
       const data = response.userData;
-      setUsers(data);
-      console.log(data);
+
+      // i want to remove login user from the all user list
+      const filterUser = data.filter((item) => item._id !== user?._id);
+
+      setAllUsers(filterUser);
+      console.log(filterUser);
     } catch (error) {
       console.log("failed to load users.", error);
     } finally {
@@ -20,9 +27,21 @@ const Sidebar = () => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logoutUser();
+      setUser(null);
+      navigate("/login");
+    } catch (error) {
+      console.log("failed to logoout.", error);
+    }
+  };
+
   useEffect(() => {
-    displayUser();
-  }, []);
+    if (user) {
+      displayUser();
+    }
+  }, [user]);
 
   return (
     <aside className="flex h-full w-full max-w-sm flex-col border-r border-zinc-800 bg-zinc-900">
@@ -50,23 +69,24 @@ const Sidebar = () => {
           <div className="relative">
             <div className="flex h-11 w-11 items-center uppercase justify-center rounded-full bg-cyan-400 font-semibold text-zinc-950">
               {/* change this to get only current / login user  */}
-              {users[0]?.username[0]}
+              {user?.username[0]}
             </div>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-sm font-semibold">
-              {users[0]?.username}
+            <h2 className="truncate text-sm capitalize font-semibold">
+              {user?.username}
             </h2>
 
             <p className="text-xs text-green-400">Online</p>
           </div>
 
           <button
-            className="flex h-9 w-9 items-center justify-center rounded-lg text-zinc-500 transition hover:bg-zinc-800 hover:text-white"
+            className="flex p-2 items-center justify-center bg-red-700 hover:bg-red-600 rounded-lg transition text-white cursor-pointer"
             title="Settings"
+            onClick={handleLogout}
           >
-            ⚙
+            Logout
           </button>
         </div>
       </div>
@@ -91,7 +111,7 @@ const Sidebar = () => {
         </h3>
 
         <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
-          {users.length > 0 ? users.length : 0}
+          {allUsers.length > 0 ? allUsers.length : 0}
         </span>
       </div>
 
@@ -115,22 +135,22 @@ const Sidebar = () => {
       ) : (
         <div className="flex flex-1 items-start justify-start px-6">
           <div className=" w-full text-center">
-            {users.map((user) => {
+            {allUsers.map((otherUser) => {
               return (
                 <div
                   className="flex items-center gap-3 border-b border-b-gray-800"
-                  key={user._id}
+                  key={otherUser._id}
                 >
                   <div className="relative">
                     <div className="flex h-11 w-11 items-center uppercase justify-center rounded-full bg-cyan-400 font-semibold text-zinc-950">
-                      {user.username[0]}
+                      {otherUser.username[0]}
                     </div>
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <div className="truncate text-sm text-left font-semibold">
                       <h2 className="py-1 px-2  capitalize my-1">
-                        {user.username}
+                        {otherUser.username}
                         <p className="text-xs text-green-400">Online</p>
                       </h2>
                     </div>
