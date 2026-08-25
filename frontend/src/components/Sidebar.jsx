@@ -4,7 +4,7 @@ import { getAllUser, logoutUser } from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useEffect } from "react";
 
-const Sidebar = () => {
+const Sidebar = ({ selectedUser, onSelectedUser }) => {
   const { user, setUser } = useAuth();
   const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -136,24 +136,28 @@ const Sidebar = () => {
         <div className="flex flex-1 items-start justify-start px-6">
           <div className=" w-full text-center">
             {allUsers.map((otherUser) => {
+              const isSelected = selectedUser?._id === otherUser._id;
+
               return (
                 <div
-                  className="flex items-center gap-3 border-b border-b-gray-800"
                   key={otherUser._id}
+                  onClick={() => onSelectedUser(otherUser)}
+                  className={`flex cursor-pointer items-center gap-3 border-b border-zinc-800 p-3 transition ${
+                    isSelected ? "bg-zinc-800" : "hover:bg-zinc-800/70"
+                  }`}
                 >
                   <div className="relative">
-                    <div className="flex h-11 w-11 items-center uppercase justify-center rounded-full bg-cyan-400 font-semibold text-zinc-950">
-                      {otherUser.username[0]}
+                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-400 font-semibold uppercase text-zinc-950">
+                      {otherUser.username?.[0]}
                     </div>
                   </div>
 
                   <div className="min-w-0 flex-1">
-                    <div className="truncate text-sm text-left font-semibold">
-                      <h2 className="py-1 px-2  capitalize my-1">
-                        {otherUser.username}
-                        <p className="text-xs text-green-400">Online</p>
-                      </h2>
-                    </div>
+                    <h2 className="truncate text-left text-sm font-semibold capitalize">
+                      {otherUser.username}
+                    </h2>
+
+                    <p className="text-left text-xs text-green-400">Online</p>
                   </div>
                 </div>
               );

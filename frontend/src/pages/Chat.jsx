@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import ChatWindow from "../components/ChatWindow";
 import socket from "../socket/socket";
@@ -6,6 +6,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Chat = () => {
   const { user } = useAuth();
+  const [selectedUser, setSelectedUser] = useState();
 
   useEffect(() => {
     if (!user) {
@@ -25,9 +26,9 @@ const Chat = () => {
 
   return (
     <main className="flex h-screen w-full bg-zinc-950 text-white">
-      <Sidebar />
+      <Sidebar selectedUser={selectedUser} onSelectedUser={setSelectedUser} />
 
-      <ChatWindow />
+      <ChatWindow selectedUser={selectedUser} />
     </main>
   );
 };
