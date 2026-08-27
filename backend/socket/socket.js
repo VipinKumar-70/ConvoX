@@ -12,7 +12,14 @@ const socketConnection = (io) => {
     socket.on("message", (message) => {
       console.log("Received message:", message);
 
-      io.emit("message", message);
+      const newMessage = {
+        id: Date.now(),
+        text: message,
+        senderId: socket.user.id,
+        createdAt: new Date().toISOString(),
+      };
+
+      io.emit("message", newMessage);
     });
 
     socket.on("disconnect", (reason) => {
