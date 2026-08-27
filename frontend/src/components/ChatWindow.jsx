@@ -1,4 +1,32 @@
+import { useEffect, useState } from "react";
+import socket from "../socket/socket";
+
 const ChatWindow = ({ selectedUser }) => {
+  const [inputMessage, setInputMessage] = useState("");
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const handleMessage = (message) => {
+      console.log("Received Message:", message);
+      setMessages((prevMessage) => [...prevMessage, message]);
+    };
+    socket.on("message", handleMessage);
+    return () => {
+      socket.off("message", handleMessage);
+    };
+  }, []);
+
+  const handleChange = (e) => {
+    setInputMessage(e.target.value);
+  };
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    socket.emit("message", inputMessage);
+    setInputMessage("");
+  };
+
   return (
     <section className="flex min-w-0 flex-1 flex-col bg-zinc-950 text-white">
       {/* Header - */}
@@ -48,109 +76,61 @@ const ChatWindow = ({ selectedUser }) => {
           {/* Messages */}
           <main className="flex-1 overflow-y-auto px-5 py-6">
             <div className="mx-auto flex max-w-4xl flex-col gap-5">
-              {/* Date */}
-              <div className="flex justify-center">
-                <span className="rounded-full bg-zinc-900 px-4 py-1.5 text-xs text-zinc-500">
-                  Today
-                </span>
-              </div>
+              {messages.map((message) => (
+                <div
+                  key={message.id || message.createdAt}
+                  className="flex justify-end"
+                >
+                  <div className="max-w-[70%]">
+                    <div className="rounded-2xl rounded-br-sm bg-cyan-400 px-4 py-3 text-zinc-950">
+                      <p className="text-sm">{message.text}</p>
+                    </div>
 
-              {/* Received Message */}
-              <div className="flex items-end gap-2">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-400 text-xs font-semibold uppercase text-zinc-950">
-                  {selectedUser.username?.[0]}
-                </div>
+                    <div className="mt-1 flex justify-end gap-1 px-1">
+                      <span className="text-[11px] text-zinc-600">
+                        {new Date(message.createdAt).toLocaleTimeString()}
+                      </span>
 
-                <div className="max-w-[70%]">
-                  <div className="rounded-2xl rounded-bl-sm bg-zinc-800 px-4 py-3">
-                    <p className="text-sm">Hey! How are you doing?</p>
-                  </div>
-
-                  <p className="mt-1 px-1 text-[11px] text-zinc-600">
-                    10:24 AM
-                  </p>
-                </div>
-              </div>
-
-              {/* Sent Message */}
-              <div className="flex justify-end">
-                <div className="max-w-[70%]">
-                  <div className="rounded-2xl rounded-br-sm bg-cyan-400 px-4 py-3 text-zinc-950">
-                    <p className="text-sm">
-                      I'm doing great! Working on ConvoX.
-                    </p>
-                  </div>
-
-                  <div className="mt-1 flex justify-end gap-1 px-1">
-                    <span className="text-[11px] text-zinc-600">10:25 AM</span>
-
-                    <span className="text-[11px] text-cyan-500">✓✓</span>
+                      <span className="text-[11px] text-cyan-500">✓</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-
-              {/* Received Message */}
-              <div className="flex items-end gap-2">
-                <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan-400 text-xs font-semibold uppercase text-zinc-950">
-                  {selectedUser.username?.[0]}
-                </div>
-
-                <div className="max-w-[70%]">
-                  <div className="rounded-2xl rounded-bl-sm bg-zinc-800 px-4 py-3">
-                    <p className="text-sm">
-                      That's awesome! Are you adding real-time messaging?
-                    </p>
-                  </div>
-
-                  <p className="mt-1 px-1 text-[11px] text-zinc-600">
-                    10:26 AM
-                  </p>
-                </div>
-              </div>
-
-              {/* Sent Message */}
-              <div className="flex justify-end">
-                <div className="max-w-[70%]">
-                  <div className="rounded-2xl rounded-br-sm bg-cyan-400 px-4 py-3 text-zinc-950">
-                    <p className="text-sm">Yes! I'm using WebSockets for it.</p>
-                  </div>
-
-                  <div className="mt-1 flex justify-end gap-1 px-1">
-                    <span className="text-[11px] text-zinc-600">10:27 AM</span>
-
-                    <span className="text-[11px] text-cyan-500">✓✓</span>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </main>
 
           {/* Message Input */}
           <footer className="border-t border-zinc-800 bg-zinc-900/80 p-4">
-            <div className="mx-auto flex max-w-4xl items-center gap-3">
-              {/* Attachment */}
-              <button
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
-                title="Attach file"
-              >
-                📎
-              </button>
+            <form action="" onSubmit={handleSubmit}>
+              <div className="mx-auto flex max-w-4xl items-center gap-3">
+                {/* Attachment */}
+                <button
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-800 hover:text-white"
+                  title="Attach file"
+                  type="button"
+                >
+                  📎
+                </button>
 
-              {/* Message Input */}
-              <input
-                type="text"
-                placeholder={`Message ${selectedUser.username}...`}
-                className="flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-cyan-400"
-              />
+                {/* Message Input */}
+                <input
+                  type="text"
+                  className="flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-white outline-none transition placeholder:text-zinc-600 focus:border-cyan-400"
+                  value={inputMessage}
+                  placeholder={`Message ${selectedUser.username}...`}
+                  onChange={handleChange}
+                />
 
-              {/* Send Button */}
-              <button
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400 font-semibold text-zinc-950 transition hover:bg-cyan-300"
-                title="Send message"
-              >
-                ➤
-              </button>
-            </div>
+                {/* Send Button */}
+                <button
+                  className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400 font-semibold text-zinc-950 transition hover:bg-cyan-300"
+                  title="Send message"
+                  type="submit"
+                >
+                  ➤
+                </button>
+              </div>
+            </form>
           </footer>
         </>
       ) : (
