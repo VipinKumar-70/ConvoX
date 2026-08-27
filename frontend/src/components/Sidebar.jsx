@@ -44,9 +44,9 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
   }, [user]);
 
   return (
-    <aside className="flex h-full w-full max-w-sm flex-col border-r border-zinc-800 bg-zinc-900">
+    <aside className="flex h-full w-full flex-col border-r border-zinc-800 bg-zinc-900">
       {/* Header */}
-      <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
+      <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3 sm:px-5 sm:py-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
             Convo<span className="text-cyan-400">X</span>
@@ -64,7 +64,7 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
       </div>
 
       {/* Current User */}
-      <div className="border-b border-zinc-800 p-4">
+      <div className="border-b border-zinc-800 p-3 sm:p-4">
         <div className="flex items-center gap-3">
           <div className="relative">
             <div className="flex h-11 w-11 items-center uppercase justify-center rounded-full bg-cyan-400 font-semibold text-zinc-950">
@@ -80,19 +80,11 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
 
             <p className="text-xs text-green-400">Online</p>
           </div>
-
-          <button
-            className="flex p-2 items-center justify-center bg-red-700 hover:bg-red-600 rounded-lg transition text-white cursor-pointer"
-            title="Settings"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
         </div>
       </div>
 
       {/* Search */}
-      <div className="px-4 py-4">
+      <div className="px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950 px-4 transition focus-within:border-cyan-400">
           <span className="text-zinc-500">🔍</span>
 
@@ -117,7 +109,7 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
 
       {/* Empty User List */}
       {isLoading ? (
-        <div className="flex flex-1 items-center justify-center px-6">
+        <div className="flex flex-1 items-start justify-start overflow-y-auto px-3 sm:px-6">
           <div className="text-center">
             <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-800 text-xl">
               💬
@@ -167,17 +159,26 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
       )}
       {/* Sidebar Footer */}
       <div className="border-t border-zinc-800 p-3">
-        <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-zinc-800">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800">
-            ⚙
-          </div>
+        <div className="flex flex-col gap-2">
+          <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-zinc-800">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-800">
+              ⚙
+            </div>
 
-          <div>
-            <p className="text-sm font-medium">Settings</p>
+            <div>
+              <p className="text-sm font-medium">Settings</p>
 
-            <p className="text-xs text-zinc-500">Account & preferences</p>
-          </div>
-        </button>
+              <p className="text-xs text-zinc-500">Account & preferences</p>
+            </div>
+          </button>
+          <button
+            className="flex w-full p-2 items-center justify-center bg-red-600 hover:bg-red-800 rounded-lg transition text-white cursor-pointer"
+            title="Settings"
+            onClick={handleLogout}
+          >
+            Logout
+          </button>
+        </div>
       </div>
     </aside>
   );

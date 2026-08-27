@@ -25,10 +25,25 @@ const Chat = () => {
   }, [user]);
 
   return (
-    <main className="flex h-screen w-full bg-zinc-950 text-white">
-      <Sidebar selectedUser={selectedUser} onSelectedUser={setSelectedUser} />
+    <main className="flex h-[100dvh] w-full overflow-hidden bg-zinc-950 text-white">
+      <div
+        className={`h-full w-full md:block md:w-80 lg:w-96 ${
+          selectedUser ? "hidden" : "block"
+        }`}
+      >
+        <Sidebar selectedUser={selectedUser} onSelectedUser={setSelectedUser} />
+      </div>
 
-      <ChatWindow selectedUser={selectedUser} />
+      <div
+        className={`h-full min-w-0 flex-1 md:block ${
+          selectedUser ? "block" : "hidden"
+        }`}
+      >
+        <ChatWindow
+          selectedUser={selectedUser}
+          onBack={() => setSelectedUser(null)}
+        />
+      </div>
     </main>
   );
 };
