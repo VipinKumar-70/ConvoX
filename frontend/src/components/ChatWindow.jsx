@@ -37,11 +37,14 @@ const ChatWindow = ({ selectedUser, onBack }) => {
     <section className="flex h-full min-h-0 min-w-0 flex-1 flex-col bg-zinc-950 text-white">
       {selectedUser ? (
         <>
-          {/* ================= HEADER ================= */}
+          {/* HEADER*/}
+
           <header className="flex shrink-0 items-center justify-between border-b border-zinc-800 bg-zinc-900/80 px-3 py-3 sm:px-5 sm:py-4">
             {/* Selected User */}
+
             <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              {/* Back button - Mobile only */}
+              {/* Back button */}
+
               <button
                 onClick={onBack}
                 type="button"
@@ -52,25 +55,32 @@ const ChatWindow = ({ selectedUser, onBack }) => {
               </button>
 
               {/* Avatar */}
+
               <div className="relative shrink-0">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400 font-semibold uppercase text-zinc-950 sm:h-11 sm:w-11">
                   {selectedUser.username?.[0]}
                 </div>
 
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-zinc-900 bg-green-400 sm:h-3 sm:w-3" />
+                {/* Dynamic presence dot */}
+
+                <span
+                  className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-zinc-900 sm:h-3 sm:w-3  bg-green-400`}
+                />
               </div>
 
               {/* Username */}
+
               <div className="min-w-0">
                 <h2 className="truncate text-sm font-semibold capitalize sm:text-base">
                   {selectedUser.username}
                 </h2>
 
-                <p className="text-xs text-green-400">Online</p>
+                <p className={`text-xs text-green-400`}>online</p>
               </div>
             </div>
 
             {/* Header Actions */}
+
             <div className="flex shrink-0 items-center gap-1 sm:gap-2">
               <button
                 type="button"
@@ -90,10 +100,10 @@ const ChatWindow = ({ selectedUser, onBack }) => {
             </div>
           </header>
 
-          {/* ================= MESSAGES ================= */}
+          {/* MESSAGES */}
+
           <main className="min-h-0 flex-1 overflow-y-auto px-3 py-4 sm:px-5 sm:py-6">
             {messages.length === 0 ? (
-              /* Empty conversation */
               <div className="flex h-full items-center justify-center">
                 <div className="px-6 text-center">
                   <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-zinc-900 text-2xl">
@@ -111,7 +121,6 @@ const ChatWindow = ({ selectedUser, onBack }) => {
                 </div>
               </div>
             ) : (
-              /* Messages */
               <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-5">
                 {messages.map((message, index) => (
                   <div
@@ -145,11 +154,13 @@ const ChatWindow = ({ selectedUser, onBack }) => {
             )}
           </main>
 
-          {/* ================= MESSAGE INPUT ================= */}
+          {/* MESSAGE INPUT */}
+
           <footer className="shrink-0 border-t border-zinc-800 bg-zinc-900/90 p-2 sm:p-4">
             <form onSubmit={handleSubmit}>
               <div className="mx-auto flex w-full max-w-4xl items-center gap-2 sm:gap-3">
                 {/* Attachment */}
+
                 <button
                   type="button"
                   className="hidden h-11 w-11 shrink-0 items-center justify-center rounded-xl text-zinc-400 transition hover:bg-zinc-800 hover:text-white sm:flex"
@@ -159,6 +170,7 @@ const ChatWindow = ({ selectedUser, onBack }) => {
                 </button>
 
                 {/* Input */}
+
                 <input
                   type="text"
                   value={inputMessage}
@@ -168,6 +180,7 @@ const ChatWindow = ({ selectedUser, onBack }) => {
                 />
 
                 {/* Send */}
+
                 <button
                   type="submit"
                   className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-cyan-400 font-semibold text-zinc-950 transition hover:bg-cyan-300 active:scale-95"
@@ -180,7 +193,8 @@ const ChatWindow = ({ selectedUser, onBack }) => {
           </footer>
         </>
       ) : (
-        /* ================= NO USER SELECTED ================= */
+        /* NO USER SELECTED */
+
         <main className="hidden flex-1 items-center justify-center md:flex">
           <div className="px-6 text-center">
             <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-zinc-900 text-3xl">

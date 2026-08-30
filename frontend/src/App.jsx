@@ -40,6 +40,15 @@ function App() {
               </ProtectedRoute>
             }
           ></Route>
+          {/* chat open for selected user */}
+          <Route
+            path="/chatWindow/:userId"
+            element={
+              <ProtectedRoute>
+                <Chat />
+              </ProtectedRoute>
+            }
+          ></Route>
         </Routes>
       </AuthProvider>
     </section>

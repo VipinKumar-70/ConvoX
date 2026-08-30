@@ -1,51 +1,28 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getAllUser, logoutUser } from "../api";
+import { logoutUser } from "../api";
 import { useAuth } from "../context/AuthContext";
-import { useEffect } from "react";
 
-const Sidebar = ({ selectedUser, onSelectedUser }) => {
+const Sidebar = ({ allUsers, selectedUser, isLoading }) => {
   const { user, setUser } = useAuth();
-  const [allUsers, setAllUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+
   const navigate = useNavigate();
-
-  const displayUser = async () => {
-    try {
-      const response = await getAllUser();
-      const data = response.userData;
-
-      // i want to remove login user from the all user list
-      const filterUser = data.filter((item) => item._id !== user?._id);
-
-      setAllUsers(filterUser);
-      console.log(filterUser);
-    } catch (error) {
-      console.log("failed to load users.", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleLogout = async () => {
     try {
       await logoutUser();
+
       setUser(null);
+
       navigate("/login");
     } catch (error) {
-      console.log("failed to logoout.", error);
+      console.log("failed to logout.", error);
     }
   };
-
-  useEffect(() => {
-    if (user) {
-      displayUser();
-    }
-  }, [user]);
 
   return (
     <aside className="flex h-full w-full flex-col border-r border-zinc-800 bg-zinc-900">
       {/* Header */}
+
       <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-3 sm:px-5 sm:py-4">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">
@@ -64,17 +41,17 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
       </div>
 
       {/* Current User */}
+
       <div className="border-b border-zinc-800 p-3 sm:p-4">
         <div className="flex items-center gap-3">
           <div className="relative">
-            <div className="flex h-11 w-11 items-center uppercase justify-center rounded-full bg-cyan-400 font-semibold text-zinc-950">
-              {/* change this to get only current / login user  */}
-              {user?.username[0]}
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-400 font-semibold uppercase text-zinc-950">
+              {user?.username?.[0]}
             </div>
           </div>
 
           <div className="min-w-0 flex-1">
-            <h2 className="truncate text-sm capitalize font-semibold">
+            <h2 className="truncate text-sm font-semibold capitalize">
               {user?.username}
             </h2>
 
@@ -84,6 +61,7 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
       </div>
 
       {/* Search */}
+
       <div className="px-3 py-3 sm:px-4 sm:py-4">
         <div className="flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-950 px-4 transition focus-within:border-cyan-400">
           <span className="text-zinc-500">🔍</span>
@@ -97,17 +75,19 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
       </div>
 
       {/* Conversations Heading */}
+
       <div className="flex items-center justify-between px-5 pb-3">
         <h3 className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
           Conversations
         </h3>
 
         <span className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-500">
-          {allUsers.length > 0 ? allUsers.length : 0}
+          {allUsers.length}
         </span>
       </div>
 
-      {/* Empty User List */}
+      {/* User List */}
+
       {isLoading ? (
         <div className="flex flex-1 items-start justify-start overflow-y-auto px-3 sm:px-6">
           <div className="text-center">
@@ -116,40 +96,42 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
             </div>
 
             <h4 className="text-sm font-medium text-zinc-300">
-              No Conversation
+              Loading users...
             </h4>
-
-            <p className="mt-1 text-xs leading-relaxed text-zinc-600">
-              Search for someone to start a new conversation.
-            </p>
           </div>
         </div>
       ) : (
-        <div className="flex flex-1 items-start justify-start px-6">
-          <div className=" w-full text-center">
+        <div className="flex flex-1 items-start justify-start overflow-y-auto px-6">
+          <div className="w-full">
             {allUsers.map((otherUser) => {
               const isSelected = selectedUser?._id === otherUser._id;
 
               return (
                 <div
                   key={otherUser._id}
-                  onClick={() => onSelectedUser(otherUser)}
+                  onClick={() => navigate(`/chatWindow/${otherUser._id}`)}
                   className={`flex cursor-pointer items-center gap-3 border-b border-zinc-800 p-3 transition ${
                     isSelected ? "bg-zinc-800" : "hover:bg-zinc-800/70"
                   }`}
                 >
-                  <div className="relative">
+                  {/* Avatar */}
+
+                  <div className="relative shrink-0">
                     <div className="flex h-11 w-11 items-center justify-center rounded-full bg-cyan-400 font-semibold uppercase text-zinc-950">
                       {otherUser.username?.[0]}
                     </div>
                   </div>
+
+                  {/* User */}
 
                   <div className="min-w-0 flex-1">
                     <h2 className="truncate text-left text-sm font-semibold capitalize">
                       {otherUser.username}
                     </h2>
 
-                    <p className="text-left text-xs text-green-400">Online</p>
+                    <p className={`text-left text-xs text-green-400 `}>
+                      Online
+                    </p>
                   </div>
                 </div>
               );
@@ -157,7 +139,9 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
           </div>
         </div>
       )}
-      {/* Sidebar Footer */}
+
+      {/* Footer */}
+
       <div className="border-t border-zinc-800 p-3">
         <div className="flex flex-col gap-2">
           <button className="flex w-full items-center gap-3 rounded-xl px-3 py-3 text-left transition hover:bg-zinc-800">
@@ -171,9 +155,9 @@ const Sidebar = ({ selectedUser, onSelectedUser }) => {
               <p className="text-xs text-zinc-500">Account & preferences</p>
             </div>
           </button>
+
           <button
-            className="flex w-full p-2 items-center justify-center bg-red-600 hover:bg-red-800 rounded-lg transition text-white cursor-pointer"
-            title="Settings"
+            className="flex w-full cursor-pointer items-center justify-center rounded-lg bg-red-600 p-2 text-white transition hover:bg-red-800"
             onClick={handleLogout}
           >
             Logout
