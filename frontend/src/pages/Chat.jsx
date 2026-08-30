@@ -15,6 +15,8 @@ const Chat = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
+  const [onlineUsers, setOnlineUsers] = useState([]);
+
   useEffect(() => {
     if (!user) return;
     const displayUser = async () => {
@@ -26,7 +28,7 @@ const Chat = () => {
         const filterUser = data.filter((item) => item._id !== user?._id);
 
         setAllUsers(filterUser);
-        console.log(filterUser);
+        console.log("All User:", filterUser);
       } catch (error) {
         console.log("failed to load users.", error);
       } finally {
@@ -39,6 +41,7 @@ const Chat = () => {
   // FIND SELECTED USER FROM URL
   const selectedUser = allUsers.find((item) => item._id === userId);
 
+  // SOCKET CONNECTION + PRESENCE
   useEffect(() => {
     if (!user) {
       return;
@@ -48,11 +51,23 @@ const Chat = () => {
       console.log("Socket connected:", socket.id);
     };
 
+    // Listen for onlineUsers
+    const handleOnlineUsers = (users) => {
+      console.log("Online users:", users);
+
+      setOnlineUsers(users);
+    };
+
     socket.on("connect", handleConnect);
+
+    // Listen for online users
+    socket.on("onlineUsers", handleOnlineUsers);
+
     socket.connect();
 
     return () => {
       socket.off("connect", handleConnect);
+      socket.off("onlineUsers", handleOnlineUsers);
       socket.disconnect();
     };
   }, [user]);
@@ -72,6 +87,7 @@ const Chat = () => {
           allUsers={allUsers}
           selectedUser={selectedUser}
           isLoading={isLoading}
+          onlineUsers={onlineUsers}
         />
       </div>
 
@@ -80,7 +96,11 @@ const Chat = () => {
           selectedUser ? "block" : "hidden"
         }`}
       >
-        <ChatWindow selectedUser={selectedUser} onBack={handleBack} />
+        <ChatWindow
+          selectedUser={selectedUser}
+          onBack={handleBack}
+          onlineUsers={onlineUsers}
+        />
       </div>
     </main>
   );

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../api";
 import { useAuth } from "../context/AuthContext";
 
-const Sidebar = ({ allUsers, selectedUser, isLoading }) => {
+const Sidebar = ({ allUsers, selectedUser, isLoading, onlineUsers }) => {
   const { user, setUser } = useAuth();
 
   const navigate = useNavigate();
@@ -106,6 +106,7 @@ const Sidebar = ({ allUsers, selectedUser, isLoading }) => {
             {allUsers.map((otherUser) => {
               const isSelected = selectedUser?._id === otherUser._id;
 
+              const isOnline = onlineUsers.includes(String(otherUser._id));
               return (
                 <div
                   key={otherUser._id}
@@ -129,8 +130,12 @@ const Sidebar = ({ allUsers, selectedUser, isLoading }) => {
                       {otherUser.username}
                     </h2>
 
-                    <p className={`text-left text-xs text-green-400 `}>
-                      Online
+                    <p
+                      className={`text-left text-xs ${
+                        isOnline ? "text-green-400" : "text-zinc-500"
+                      }`}
+                    >
+                      {isOnline ? "Online" : "Offline"}
                     </p>
                   </div>
                 </div>

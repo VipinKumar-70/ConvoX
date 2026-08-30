@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import socket from "../socket/socket";
 
-const ChatWindow = ({ selectedUser, onBack }) => {
+const ChatWindow = ({ selectedUser, onlineUsers, onBack }) => {
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([]);
+
+  const isOnline =
+    selectedUser && onlineUsers.includes(String(selectedUser._id));
 
   useEffect(() => {
     const handleMessage = (message) => {
@@ -60,12 +63,6 @@ const ChatWindow = ({ selectedUser, onBack }) => {
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-400 font-semibold uppercase text-zinc-950 sm:h-11 sm:w-11">
                   {selectedUser.username?.[0]}
                 </div>
-
-                {/* Dynamic presence dot */}
-
-                <span
-                  className={`absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-zinc-900 sm:h-3 sm:w-3  bg-green-400`}
-                />
               </div>
 
               {/* Username */}
@@ -75,7 +72,11 @@ const ChatWindow = ({ selectedUser, onBack }) => {
                   {selectedUser.username}
                 </h2>
 
-                <p className={`text-xs text-green-400`}>online</p>
+                <p
+                  className={`text-xs ${isOnline ? "text-green-400" : "text-zinc-400"}`}
+                >
+                  {isOnline ? "Online" : "Offline"}
+                </p>
               </div>
             </div>
 
