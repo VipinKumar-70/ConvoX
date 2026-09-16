@@ -40,8 +40,15 @@ const socketConnection = (io) => {
         );
 
         socket.emit("private_message", message);
-
         console.log("Private message saved:", message);
+        // Send message to receiver
+        const receiverSockets = onlineUsers.get(receiverId);
+
+        if (receiverSockets) {
+          receiverSockets.forEach((socketId) => {
+            io.to(socketId).emit("private_message", message);
+          });
+        }
       } catch (error) {
         console.log("Send private message error:", error);
       }
