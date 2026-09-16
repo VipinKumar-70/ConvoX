@@ -1,4 +1,5 @@
 const socketAuth = require("./socketAuth");
+const { createPrivateMessage } = require("../Controllers/privateMessage");
 
 const onlineUsers = new Map();
 
@@ -25,17 +26,25 @@ const socketConnection = (io) => {
     // Send online users to all clients
     io.emit("onlineUsers", Array.from(onlineUsers.keys()));
 
-    socket.on("message", (message) => {
-      console.log("Received message:", message);
+    // private Message
+    socket.on("send_private_message", async (data) => {
+      try {
+        const { receiverId, content } = data;
 
-      const newMessage = {
-        id: Date.now(),
-        text: message,
-        senderId: socket.user.id,
-        createdAt: new Date().toISOString(),
-      };
+        const senderId = socket.user.id;
 
-      io.emit("message", newMessage);
+        const message = await createPrivateMessage(
+          senderId,
+          receiverId,
+          content,
+        );
+
+        socket.emit("private_message", message);
+
+        console.log("Private message saved:", message);
+      } catch (error) {
+        console.log("Send private message error:", error);
+      }
     });
 
     socket.on("disconnect", (reason) => {
@@ -54,7 +63,7 @@ const socketConnection = (io) => {
         }
       }
       console.log("Online users:", Array.from(onlineUsers.keys()));
-      
+
       // Send updated online users
       io.emit("onlineUsers", Array.from(onlineUsers.keys()));
     });

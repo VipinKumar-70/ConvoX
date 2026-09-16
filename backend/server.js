@@ -6,6 +6,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const userAuth = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
+const privateMessageAuth = require("./routes/privateMessageRoute");
 const connectDB = require("./config/database");
 
 const http = require("http");
@@ -44,6 +45,7 @@ require("./socket/socket")(io);
 
 app.use("/api/auth", userAuth);
 app.use("/api/user", userRoutes);
+app.use("/api/message", privateMessageAuth);
 
 // start server
 const startServer = async () => {
