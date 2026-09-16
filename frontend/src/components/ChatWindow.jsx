@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import socket from "../socket/socket";
+import { getPrivateMessage } from "../api";
 
-const ChatWindow = ({ selectedUser, onlineUsers, onBack }) => {
+const ChatWindow = ({ selectedUser, onlineUsers, onBack, user }) => {
   const [inputMessage, setInputMessage] = useState("");
   const [messages, setMessages] = useState([]);
 
@@ -9,16 +10,35 @@ const ChatWindow = ({ selectedUser, onlineUsers, onBack }) => {
     selectedUser && onlineUsers.includes(String(selectedUser._id));
 
   useEffect(() => {
-    const handleMessage = (message) => {
+    if (!selectedUser) {
+      setMessages([]);
+      return;
+    }
+
+    const loadMessages = async () => {
+      try {
+        const response = await getPrivateMessage(selectedUser._id);
+
+        setMessages(response.messages);
+      } catch (error) {
+        console.log("Failed to load private messages:", error);
+      }
+    };
+
+    loadMessages();
+  }, [selectedUser]);
+
+  useEffect(() => {
+    const handlePrivateMessage = (message) => {
       console.log("Received Message:", message);
 
       setMessages((prevMessages) => [...prevMessages, message]);
     };
 
-    socket.on("message", handleMessage);
+    socket.on("private_message", handlePrivateMessage);
 
     return () => {
-      socket.off("message", handleMessage);
+      socket.off("private_message", handlePrivateMessage);
     };
   }, []);
 
@@ -31,7 +51,10 @@ const ChatWindow = ({ selectedUser, onlineUsers, onBack }) => {
 
     if (!inputMessage.trim()) return;
 
-    socket.emit("message", inputMessage.trim());
+    socket.emit("send_private_message", {
+      receiverId: selectedUser._id,
+      content: inputMessage.trim(),
+    });
 
     setInputMessage("");
   };
@@ -123,34 +146,55 @@ const ChatWindow = ({ selectedUser, onlineUsers, onBack }) => {
               </div>
             ) : (
               <div className="mx-auto flex w-full max-w-4xl flex-col gap-3 sm:gap-5">
-                {messages.map((message, index) => (
-                  <div
-                    key={message.id || message.createdAt || index}
-                    className="flex w-full justify-end"
-                  >
-                    <div className="max-w-[85%] sm:max-w-[70%]">
-                      <div className="rounded-2xl rounded-br-sm bg-cyan-400 px-4 py-3 text-zinc-950">
-                        <p className="break-words text-sm">{message.text}</p>
-                      </div>
+                {messages.map((message, index) => {
+                  const isMyMessage =
+                    String(message.sender) === String(user?._id);
 
-                      <div className="mt-1 flex justify-end gap-1 px-1">
-                        <span className="text-[11px] text-zinc-600">
-                          {message.createdAt
-                            ? new Date(message.createdAt).toLocaleTimeString(
-                                [],
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                },
-                              )
-                            : ""}
-                        </span>
+                  return (
+                    <div
+                      key={message._id || index}
+                      className={`flex w-full ${
+                        isMyMessage ? "justify-end" : "justify-start"
+                      }`}
+                    >
+                      <div className="max-w-[85%] sm:max-w-[70%]">
+                        <div
+                          className={`rounded-2xl px-4 py-3 ${
+                            isMyMessage
+                              ? "rounded-br-sm bg-cyan-400 text-zinc-950"
+                              : "rounded-bl-sm bg-zinc-800 text-white"
+                          }`}
+                        >
+                          <p className="break-words text-sm">
+                            {message.content}
+                          </p>
+                        </div>
 
-                        <span className="text-[11px] text-cyan-500">✓</span>
+                        <div
+                          className={`mt-1 flex gap-1 px-1 ${
+                            isMyMessage ? "justify-end" : "justify-start"
+                          }`}
+                        >
+                          <span className="text-[11px] text-zinc-600">
+                            {message.createdAt
+                              ? new Date(message.createdAt).toLocaleTimeString(
+                                  [],
+                                  {
+                                    hour: "2-digit",
+                                    minute: "2-digit",
+                                  },
+                                )
+                              : ""}
+                          </span>
+
+                          {isMyMessage && (
+                            <span className="text-[11px] text-cyan-500">✓</span>
+                          )}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </main>

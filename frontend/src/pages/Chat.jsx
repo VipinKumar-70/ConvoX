@@ -100,6 +100,7 @@ const Chat = () => {
           selectedUser={selectedUser}
           onBack={handleBack}
           onlineUsers={onlineUsers}
+          user={user}
         />
       </div>
     </main>
