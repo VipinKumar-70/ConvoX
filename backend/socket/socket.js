@@ -1,7 +1,9 @@
 const socketAuth = require("./socketAuth");
-const { createPrivateMessage } = require("../Controllers/privateMessage");
 
-const onlineUsers = new Map();
+const privateMessage = require("./handlers/privateMessage");
+
+const { addOnlineUser, removeOnlineUser, getOnlineUsers } =
+  require("./handlers/socketUtils").default;
 
 const socketConnection = (io) => {
   console.log("Socket.IO setup loaded");
@@ -11,68 +13,23 @@ const socketConnection = (io) => {
   io.on("connection", (socket) => {
     const userId = socket.user.id;
 
-    console.log("User connected with Socket ID:", socket.id);
-    console.log("User ID:", socket.user.id);
+    console.log("User connected:", socket.id);
+    console.log("User ID:", userId);
 
-    // Send updated online users
-    if (!onlineUsers.has(userId)) {
-      onlineUsers.set(userId, new Set());
-    }
-    // Add this socket to user's sockets
-    onlineUsers.get(userId).add(socket.id);
+    addOnlineUser(userId, socket.id);
 
-    console.log("Online users:", Array.from(onlineUsers.keys()));
+    io.emit("onlineUsers", getOnlineUsers());
 
-    // Send online users to all clients
-    io.emit("onlineUsers", Array.from(onlineUsers.keys()));
-
-    // private Message
-    socket.on("send_private_message", async (data) => {
-      try {
-        const { receiverId, content } = data;
-
-        const senderId = socket.user.id;
-
-        const message = await createPrivateMessage(
-          senderId,
-          receiverId,
-          content,
-        );
-
-        socket.emit("private_message", message);
-        console.log("Private message saved:", message);
-        // Send message to receiver
-        const receiverSockets = onlineUsers.get(receiverId);
-
-        if (receiverSockets) {
-          receiverSockets.forEach((socketId) => {
-            io.to(socketId).emit("private_message", message);
-          });
-        }
-      } catch (error) {
-        console.log("Send private message error:", error);
-      }
-    });
+    privateMessage(io, socket);
 
     socket.on("disconnect", (reason) => {
       console.log(
         `User disconnected. Socket ID: ${socket.id}, Reason: ${reason}`,
       );
 
-      const userSockets = onlineUsers.get(userId);
-      if (userSockets) {
-        // Remove disconnected socket
-        userSockets.delete(socket.id);
+      removeOnlineUser(userId, socket.id);
 
-        // If user has no other connected sockets
-        if (userSockets.size === 0) {
-          onlineUsers.delete(userId);
-        }
-      }
-      console.log("Online users:", Array.from(onlineUsers.keys()));
-
-      // Send updated online users
-      io.emit("onlineUsers", Array.from(onlineUsers.keys()));
+      io.emit("onlineUsers", getOnlineUsers());
     });
   });
 };
